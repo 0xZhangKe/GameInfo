@@ -104,6 +104,11 @@ public class SocketThread extends Thread {
         }
 
         private void connect() {
+            if (status == 2) {
+                ZLog.d(TAG, "Socket已连接，请勿重复调用");
+                return;
+            }
+            ZLog.d(TAG, "开始连接Socket...");
             status = 1;
             try {
                 mSocket = new Socket("", 1234);
@@ -113,8 +118,10 @@ public class SocketThread extends Thread {
                 if (socketListener != null) {
                     socketListener.onConnected();
                 }
+                ZLog.d(TAG, "Socket连接成功");
             } catch (IOException e) {
-                ZLog.e(TAG, "connect()", e);
+                ZLog.i(TAG, "Socket连接失败", e);
+                ZLog.e(TAG, "Socket连接失败", e);
                 if (socketListener != null) {
                     socketListener.onConnectError(e);
                 }
@@ -122,6 +129,11 @@ public class SocketThread extends Thread {
         }
 
         private void disconnect() {
+            if (status == 0) {
+                ZLog.d(TAG, "Socket未连接，请勿重复调用");
+                return;
+            }
+            ZLog.d(TAG, "正在断开Socket连接...");
             try {
                 mOutputStream.close();
                 mSocket.close();
@@ -129,12 +141,15 @@ public class SocketThread extends Thread {
                 if (socketListener != null) {
                     socketListener.onDisconnected();
                 }
+                ZLog.i(TAG, "Socket连接已断开");
             } catch (IOException e) {
+                ZLog.i(TAG, "断开Socket连接失败", e);
                 ZLog.e(TAG, "disconnect()", e);
             }
         }
 
         private void quit() {
+            ZLog.d(TAG, "正在结束Socket线程");
             mInputMonitorThread.quit();
             mInputMonitorThread.interrupt();
             disconnect();
@@ -143,6 +158,7 @@ public class SocketThread extends Thread {
                 looper.quit();
             }
             status = 0;
+            ZLog.d(TAG, "Socket线程已结束");
         }
 
         private void sendText(String text) {
@@ -153,8 +169,10 @@ public class SocketThread extends Thread {
                     }
                     mOutputStream.write((text + "\n").getBytes("utf-8"));
                     mOutputStream.flush();
+                    ZLog.i(TAG, String.format("数据：%s,已发送", text));
                 }
             } catch (IOException e) {
+                ZLog.i(TAG, String.format("数据：%s,发送失败", text), e);
                 ZLog.e(TAG, "sendText(String)", e);
                 if (socketListener != null) {
                     socketListener.onSendTextError(e);
@@ -185,7 +203,7 @@ public class SocketThread extends Thread {
                     mBufferedReader = new BufferedReader(mInputStreamReader);
                     String response = mBufferedReader.readLine();
                     if (!TextUtils.isEmpty(response)) {
-                        ZLog.i(TAG, "run()——>收到消息：" + response);
+                        ZLog.i(TAG, "run()——>Socket收到消息：" + response);
                         Message message = mHandler.obtainMessage();
                         message.what = MessageType.RECEIVE_MESSAGE;
                         message.obj = response;
@@ -206,6 +224,7 @@ public class SocketThread extends Thread {
             } catch (Exception e) {
                 ZLog.e(TAG, "quit()", e);
             }
+            ZLog.i(TAG, "Socket数据读取线程已结束");
         }
     }
 }
