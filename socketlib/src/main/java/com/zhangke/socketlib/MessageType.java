@@ -4,11 +4,11 @@ package com.zhangke.socketlib;
  * SocketThread中的消息类型
  * Created by ZhangKe on 2018/6/7.
  */
-public enum MessageType {
+public interface MessageType {
 
-    CONNECT,//连接Socket
-    DISCONNECT,//断开连接
-    QUIT,//结束线程
-    SEND_MESSAGE,//通过Socket连接发送数据
-    RECEIVE_MESSAGE//通过Socket获取到数据
+    int CONNECT = 0;//连接Socket
+    int DISCONNECT = 1;//断开连接
+    int QUIT = 2;//结束线程
+    int SEND_MESSAGE = 3;//通过Socket连接发送数据
+    int RECEIVE_MESSAGE = 4;//通过Socket获取到数据
 }
