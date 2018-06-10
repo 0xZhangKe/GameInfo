@@ -14,7 +14,7 @@ import com.zhangke.socketlib.SocketListener;
 import com.zhangke.socketlib.SocketService;
 import com.zhangke.zlog.ZLog;
 
-public class MainActivity extends AppCompatActivity implements SocketListener{
+public class MainActivity extends AppCompatActivity implements SocketListener {
 
     private static final String TAG = "MainActivity";
 
@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements SocketListener{
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mSocketService = (SocketService) ((SocketService.ServiceBinder) service).getService();
+            mSocketService.addListener(MainActivity.this);
+            mSocketService.connect();
         }
 
         @Override
@@ -30,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements SocketListener{
             ZLog.e(TAG, "SocketService连接失败");
         }
     };
-
 
     private EditText etText;
     private TextView tvReceive;
@@ -43,45 +44,54 @@ public class MainActivity extends AppCompatActivity implements SocketListener{
         etText = findViewById(R.id.et_text);
         tvReceive = findViewById(R.id.tv_receive);
 
-        findViewById(R.id.btn_send).setOnClickListener(v ->{
+        findViewById(R.id.btn_send).setOnClickListener(v -> {
             mSocketService.send(etText.getText().toString());
+        });
+
+        findViewById(R.id.btn_connect).setOnClickListener(v -> {
+            runOnUiThread(() -> tvReceive.setText(String.format("%s\n正在连接...", tvReceive.getText().toString())));
+            mSocketService.connect();
+        });
+
+        findViewById(R.id.btn_disconnect).setOnClickListener(v -> {
+            mSocketService.disconnect();
         });
 
         bindSocketService();
     }
 
-    private void bindSocketService(){
+    private void bindSocketService() {
         Intent intent = new Intent(this, SocketService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    private void unBindSocketService(){
+    private void unBindSocketService() {
         unbindService(serviceConnection);
     }
 
     @Override
     public void onConnected() {
-        tvReceive.setText(String.format("%s\n连接成功", tvReceive.getText().toString()));
+        runOnUiThread(() -> tvReceive.setText(String.format("%s\n连接成功", tvReceive.getText().toString())));
     }
 
     @Override
     public void onConnectError(Throwable cause) {
-        tvReceive.setText(String.format("%s\n连接失败", tvReceive.getText().toString()));
+        runOnUiThread(() -> tvReceive.setText(String.format("%s\n连接失败", tvReceive.getText().toString())));
     }
 
     @Override
     public void onDisconnected() {
-        tvReceive.setText(String.format("%s\n断开连接", tvReceive.getText().toString()));
+        runOnUiThread(() -> tvReceive.setText(String.format("%s\n断开连接", tvReceive.getText().toString())));
     }
 
     @Override
     public void onSendTextError(Throwable cause) {
-        tvReceive.setText(String.format("%s\n数据发送失败：%s", tvReceive.getText().toString(), cause.toString()));
+        runOnUiThread(() -> tvReceive.setText(String.format("%s\n数据发送失败：%s", tvReceive.getText().toString(), cause.toString())));
     }
 
     @Override
     public void onTextMessage(String message) {
-        tvReceive.setText(String.format("%s\n接收到消息：%s", tvReceive.getText().toString(), message));
+        runOnUiThread(() -> tvReceive.setText(String.format("%s\n接收到消息：%s", tvReceive.getText().toString(), message)));
     }
 
     @Override

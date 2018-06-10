@@ -18,18 +18,31 @@
         android:layout_height="wrap_content"
         android:text="发送数据" />
 
+
+    <Button
+        android:id="@+id/btn_connect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="重新连接" />
+
     <Button
         android:id="@+id/btn_disconnect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="断开连接" />
 
-    <TextView
-        android:id="@+id/tv_receive"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp" />
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv_receive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="正在连接..."/>
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>
