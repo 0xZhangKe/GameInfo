@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
@@ -35,9 +36,11 @@ public class SocketThread extends Thread {
 
     private Socket mSocket;
     private OutputStream mOutputStream;
-    private InputMonitorThread mInputMonitorThread;
 
     private SocketListener socketListener;
+
+    private InputMonitorThread mInputMonitorThread;
+    private HeartbeatThread mHeartbeatThread;
 
     public SocketThread() {
     }
@@ -45,21 +48,18 @@ public class SocketThread extends Thread {
     @Override
     public void run() {
         super.run();
+        Looper.prepare();
         mHandler = new SocketHandler();
         status = 0;
-        Looper.prepare();
+        mInputMonitorThread = new InputMonitorThread(mHandler);
+        mInputMonitorThread.start();
+        mHeartbeatThread = new HeartbeatThread(mHandler);
+        mHeartbeatThread.start();
         Looper.loop();
     }
 
     public Handler getHandler() {
         return mHandler;
-    }
-
-    public void send(String text) {
-        Message message = mHandler.obtainMessage();
-        message.what = MessageType.SEND_MESSAGE;
-        message.obj = text;
-        mHandler.sendMessage(message);
     }
 
     public void setSocketListener(SocketListener socketListener) {
@@ -87,7 +87,7 @@ public class SocketThread extends Thread {
                     break;
                 case MessageType.SEND_MESSAGE:
                     if (msg.obj instanceof String) {
-                        if (mSocket.isConnected()) {
+                        if (mSocket.isConnected() && !mSocket.isClosed()) {
                             sendText((String) msg.obj);
                         } else {
                             mHandler.sendEmptyMessage(MessageType.CONNECT);
@@ -103,6 +103,9 @@ public class SocketThread extends Thread {
             }
         }
 
+        /**
+         * 连接服务
+         */
         private void connect() {
             if (status == 2) {
                 ZLog.d(TAG, "Socket已连接，请勿重复调用");
@@ -111,10 +114,10 @@ public class SocketThread extends Thread {
             ZLog.d(TAG, "开始连接Socket...");
             status = 1;
             try {
-                mSocket = new Socket("", 1234);
+                mSocket = new Socket("192.168.31.78", 6800);
+                mInputMonitorThread.bindSocket(mSocket);
+                mHeartbeatThread.bindSocket(mSocket);
                 status = 2;
-                mInputMonitorThread = new InputMonitorThread();
-                mInputMonitorThread.start();
                 if (socketListener != null) {
                     socketListener.onConnected();
                 }
@@ -128,6 +131,9 @@ public class SocketThread extends Thread {
             }
         }
 
+        /**
+         * 断开连接
+         */
         private void disconnect() {
             if (status == 0) {
                 ZLog.d(TAG, "Socket未连接，请勿重复调用");
@@ -135,9 +141,14 @@ public class SocketThread extends Thread {
             }
             ZLog.d(TAG, "正在断开Socket连接...");
             try {
-                mOutputStream.close();
-                mSocket.close();
+                if (mSocket != null) {
+                    mSocket.close();
+                }
                 status = 0;
+                if (mOutputStream != null) {
+                    mOutputStream.close();
+                    mOutputStream = null;
+                }
                 if (socketListener != null) {
                     socketListener.onDisconnected();
                 }
@@ -148,22 +159,31 @@ public class SocketThread extends Thread {
             }
         }
 
+        /**
+         * 结束该线程
+         */
         private void quit() {
             ZLog.d(TAG, "正在结束Socket线程");
-            mInputMonitorThread.quit();
-            mInputMonitorThread.interrupt();
             disconnect();
             Looper looper = Looper.myLooper();
             if (looper != null) {
                 looper.quit();
             }
             status = 0;
+            if (mInputMonitorThread != null) {
+                mInputMonitorThread.quit();
+                mInputMonitorThread = null;
+            }
+            if (mHeartbeatThread != null) {
+                mHeartbeatThread.quit();
+                mHeartbeatThread = null;
+            }
             ZLog.d(TAG, "Socket线程已结束");
         }
 
         private void sendText(String text) {
             try {
-                if (mSocket.isConnected()) {
+                if (mSocket.isConnected() && !mSocket.isClosed()) {
                     if (mOutputStream == null) {
                         mOutputStream = mSocket.getOutputStream();
                     }
@@ -178,53 +198,6 @@ public class SocketThread extends Thread {
                     socketListener.onSendTextError(e);
                 }
             }
-        }
-    }
-
-    private class InputMonitorThread extends Thread {
-
-        private boolean stop;
-
-        private InputStream mInputStream;
-        private InputStreamReader mInputStreamReader;
-        private BufferedReader mBufferedReader;
-
-        InputMonitorThread() {
-            stop = false;
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            while (!stop) {
-                try {
-                    mInputStream = mSocket.getInputStream();
-                    mInputStreamReader = new InputStreamReader(mInputStream);
-                    mBufferedReader = new BufferedReader(mInputStreamReader);
-                    String response = mBufferedReader.readLine();
-                    if (!TextUtils.isEmpty(response)) {
-                        ZLog.i(TAG, "run()——>Socket收到消息：" + response);
-                        Message message = mHandler.obtainMessage();
-                        message.what = MessageType.RECEIVE_MESSAGE;
-                        message.obj = response;
-                        mHandler.sendMessage(message);
-                    }
-                } catch (IOException e) {
-                    ZLog.e(TAG, "InputObserver#run()", e);
-                }
-            }
-        }
-
-        void quit() {
-            stop = true;
-            try {
-                mInputStream.close();
-                mInputStreamReader.close();
-                mBufferedReader.close();
-            } catch (Exception e) {
-                ZLog.e(TAG, "quit()", e);
-            }
-            ZLog.i(TAG, "Socket数据读取线程已结束");
         }
     }
 }
