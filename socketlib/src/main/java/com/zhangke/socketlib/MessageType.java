@@ -7,7 +7,7 @@ package com.zhangke.socketlib;
 public interface MessageType {
 
     int CONNECT = 0;//连接Socket
-    int DISCONNECT = 1;//断开连接
+    int DISCONNECT = 1;//断开连接，主动关闭或被动关闭
     int QUIT = 2;//结束线程
     int SEND_MESSAGE = 3;//通过Socket连接发送数据
     int RECEIVE_MESSAGE = 4;//通过Socket获取到数据

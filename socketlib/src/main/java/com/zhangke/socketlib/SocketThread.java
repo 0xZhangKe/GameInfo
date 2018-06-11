@@ -114,7 +114,7 @@ public class SocketThread extends Thread {
             ZLog.d(TAG, "开始连接Socket...");
             status = 1;
             try {
-                mSocket = new Socket("192.168.31.78", 6800);
+                mSocket = new Socket("192.168.22.139", 6800);
                 mInputMonitorThread.bindSocket(mSocket);
                 mHeartbeatThread.bindSocket(mSocket);
                 status = 2;
@@ -191,9 +191,13 @@ public class SocketThread extends Thread {
                     mOutputStream.flush();
                     ZLog.i(TAG, String.format("数据：%s,已发送", text));
                 }
+            } catch (SocketException e) {
+                ZLog.i(TAG, String.format("数据：%s,发送失败，Socket连接已断开", text), e);
+                ZLog.e(TAG, String.format("数据：%s,发送失败，Socket连接已断开", text), e);
+                mHandler.sendEmptyMessage(MessageType.DISCONNECT);
             } catch (IOException e) {
                 ZLog.i(TAG, String.format("数据：%s,发送失败", text), e);
-                ZLog.e(TAG, "sendText(String)", e);
+                ZLog.e(TAG, String.format("数据：%s,发送失败", text), e);
                 if (socketListener != null) {
                     socketListener.onSendTextError(e);
                 }
