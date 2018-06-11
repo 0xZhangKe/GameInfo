@@ -7,8 +7,10 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zhangke.socketlib.SocketListener;
 import com.zhangke.socketlib.SocketService;
@@ -45,7 +47,12 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
         tvReceive = findViewById(R.id.tv_receive);
 
         findViewById(R.id.btn_send).setOnClickListener(v -> {
-            mSocketService.send(etText.getText().toString());
+            String text = etText.getText().toString();
+            if(TextUtils.isEmpty(text)){
+                Toast.makeText(MainActivity.this, "数据是空的", Toast.LENGTH_SHORT).show();
+            }else{
+                mSocketService.send(text);
+            }
         });
 
         findViewById(R.id.btn_connect).setOnClickListener(v -> {
