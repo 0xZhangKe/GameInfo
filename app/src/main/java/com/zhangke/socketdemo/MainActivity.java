@@ -1,4 +1,4 @@
-package com.zhangke.gameinfo;
+package com.zhangke.socketdemo;
 
 import android.content.ComponentName;
 import android.content.Context;
