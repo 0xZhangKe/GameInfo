@@ -5,44 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
-
-    <EditText
-        android:id="@+id/et_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_send"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="发送数据" />
+    tools:context=".MainActivity"
+    android:background="@mipmap/bg">
 
 
-    <Button
-        android:id="@+id/btn_connect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="重新连接" />
-
-    <Button
-        android:id="@+id/btn_disconnect"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="断开连接" />
-
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="10dp">
-        <TextView
-            android:id="@+id/tv_receive"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:text="正在连接..."/>
-    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

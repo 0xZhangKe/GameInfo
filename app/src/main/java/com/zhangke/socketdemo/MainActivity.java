@@ -8,17 +8,21 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zhangke.socketlib.SocketListener;
 import com.zhangke.socketlib.SocketService;
 import com.zhangke.zlog.ZLog;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements SocketListener {
 
     private static final String TAG = "MainActivity";
+
+    private ArrayList<GameInfo> gameInfoList = new ArrayList<>();
 
     private SocketService mSocketService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -35,34 +39,10 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
         }
     };
 
-    private EditText etText;
-    private TextView tvReceive;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        etText = findViewById(R.id.et_text);
-        tvReceive = findViewById(R.id.tv_receive);
-
-        findViewById(R.id.btn_send).setOnClickListener(v -> {
-            String text = etText.getText().toString();
-            if(TextUtils.isEmpty(text)){
-                Toast.makeText(MainActivity.this, "数据是空的", Toast.LENGTH_SHORT).show();
-            }else{
-                mSocketService.send(text);
-            }
-        });
-
-        findViewById(R.id.btn_connect).setOnClickListener(v -> {
-            runOnUiThread(() -> tvReceive.setText(String.format("%s\n正在连接...", tvReceive.getText().toString())));
-            mSocketService.connect();
-        });
-
-        findViewById(R.id.btn_disconnect).setOnClickListener(v -> {
-            mSocketService.disconnect();
-        });
 
         bindSocketService();
     }
@@ -78,27 +58,53 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
 
     @Override
     public void onConnected() {
-        runOnUiThread(() -> tvReceive.setText(String.format("%s\n连接成功", tvReceive.getText().toString())));
     }
 
     @Override
     public void onConnectError(Throwable cause) {
-        runOnUiThread(() -> tvReceive.setText(String.format("%s\n连接失败", tvReceive.getText().toString())));
     }
 
     @Override
     public void onDisconnected() {
-        runOnUiThread(() -> tvReceive.setText(String.format("%s\n断开连接", tvReceive.getText().toString())));
     }
 
     @Override
     public void onSendTextError(Throwable cause) {
-        runOnUiThread(() -> tvReceive.setText(String.format("%s\n数据发送失败：%s", tvReceive.getText().toString(), cause.toString())));
     }
 
     @Override
-    public void onTextMessage(String message) {
-        runOnUiThread(() -> tvReceive.setText(String.format("%s\n接收到消息：%s", tvReceive.getText().toString(), message)));
+    public void onTextMessage(final String message) {
+        runOnUiThread(() -> {
+            if (!TextUtils.isEmpty(message) && message.contains("<") && message.contains(">") && message.contains(",")) {
+                String messageBody = message.replace(">", "");
+                messageBody = messageBody.replace("<", "");
+                messageBody = messageBody.replaceAll(" ", "");
+                String[] infoArray = messageBody.split(",");
+                if (infoArray.length == 3) {
+                    String number = infoArray[0];
+                    String hitCount = infoArray[1];
+                    String beHitCount = infoArray[2];
+                    if (!TextUtils.isEmpty(number) && !TextUtils.isEmpty(hitCount) && !TextUtils.isEmpty(beHitCount)) {
+                        addInfo(new GameInfo(number, Integer.valueOf(hitCount), Integer.valueOf(beHitCount)));
+                    }
+                }
+            }
+        });
+    }
+
+    private void addInfo(GameInfo gameInfo) {
+        if (gameInfoList.contains(gameInfo)) {
+            gameInfoList.remove(gameInfo);
+        }
+        gameInfoList.add(gameInfo);
+        Collections.sort(gameInfoList, (GameInfo o1, GameInfo o2) -> o1.getScore() - o2.getScore());
+        if (gameInfoList.size() > 6) {
+            gameInfoList = (ArrayList<GameInfo>) gameInfoList.subList(0, 6);
+        }
+    }
+
+    private void showInfo(){
+
     }
 
     @Override

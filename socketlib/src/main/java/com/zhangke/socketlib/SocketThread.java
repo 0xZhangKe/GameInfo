@@ -114,7 +114,7 @@ public class SocketThread extends Thread {
             ZLog.d(TAG, "开始连接Socket...");
             status = 1;
             try {
-                mSocket = new Socket("192.168.22.139", 6800);
+                mSocket = new Socket("192.168.22.114", 6800);
                 mInputMonitorThread.bindSocket(mSocket);
                 mHeartbeatThread.bindSocket(mSocket);
                 status = 2;
