@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
         videoView = findViewById(R.id.video_view);
 
         bindSocketService();
+
+        playVideo();
+        videoView.setOnCompletionListener(mp -> {
+            playVideo();
+        });
     }
 
     private void bindSocketService() {
