@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/bg"
@@ -8,38 +8,41 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="15dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="15dp"
         android:layout_marginTop="50dp"
         android:orientation="vertical">
 
 
-        <View android:layout_width="match_parent"
+        <View
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_color"/>
+            android:background="@color/divider_color" />
 
         <com.zhangke.socketdemo.LineView
             android:id="@+id/linea_01"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#F00"/>
+            android:background="#F00" />
 
-        <View android:layout_width="match_parent"
+        <View
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_color"/>
+            android:background="@color/divider_color" />
 
         <com.zhangke.socketdemo.LineView
             android:id="@+id/linea_02"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
-            android:background="#FFC000"/>
+            android:background="#FFC000" />
 
-        <View android:layout_width="match_parent"
+        <View
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_color"/>
+            android:background="@color/divider_color" />
 
         <com.zhangke.socketdemo.LineView
             android:id="@+id/linea_03"
@@ -48,31 +51,34 @@
             android:layout_weight="0.7"
             android:background="#FFFF00" />
 
-        <View android:layout_width="match_parent"
+        <View
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_color"/>
+            android:background="@color/divider_color" />
 
         <com.zhangke.socketdemo.LineView
             android:id="@+id/linea_04"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.6"
-            android:background="#92D050"/>
+            android:background="#92D050" />
 
-        <View android:layout_width="match_parent"
+        <View
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_color"/>
+            android:background="@color/divider_color" />
 
         <com.zhangke.socketdemo.LineView
             android:id="@+id/linea_05"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:background="#92D050"/>
+            android:background="#92D050" />
 
-        <View android:layout_width="match_parent"
+        <View
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_color"/>
+            android:background="@color/divider_color" />
 
         <com.zhangke.socketdemo.LineView
             android:id="@+id/linea_06"
@@ -81,11 +87,15 @@
             android:layout_weight="0.4"
             android:background="#92D050" />
 
-        <View android:layout_width="match_parent"
+        <View
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_color"/>
+            android:background="@color/divider_color" />
 
     </LinearLayout>
 
-
-</LinearLayout>
+    <VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

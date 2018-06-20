@@ -4,10 +4,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.VideoView;
 
 import com.zhangke.socketlib.SocketListener;
 import com.zhangke.socketlib.SocketService;
@@ -25,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
     private LineView lineView01, lineView02,
             lineView03, lineView04,
             lineView05, lineView06;
+    private VideoView videoView;
 
     private ArrayList<GameInfo> gameInfoList = new ArrayList<>();
 
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         lineView01 = findViewById(R.id.linea_01);
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
         lineView04 = findViewById(R.id.linea_04);
         lineView05 = findViewById(R.id.linea_05);
         lineView06 = findViewById(R.id.linea_06);
+
+        videoView = findViewById(R.id.video_view);
 
         bindSocketService();
     }
@@ -126,6 +134,34 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
                     lineView06.setInfo(gameInfoList.size() > 5 ? gameInfoList.get(5) : null);
                 }
         );
+    }
+
+    private void playVideo() {
+        if (videoView.getVisibility() != View.VISIBLE) {
+            videoView.setVisibility(View.VISIBLE);
+        }
+        videoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.trailer));
+        videoView.start();
+        videoView.requestFocus();
+    }
+
+    private void pauseVideo() {
+        videoView.pause();
+        videoView.setVisibility(View.GONE);
+        videoView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (videoView.getVisibility() == View.VISIBLE) {
+            pauseVideo();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
