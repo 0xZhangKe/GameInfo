@@ -7,6 +7,7 @@ import android.text.TextUtils;
  */
 public class GameInfo {
 
+    private int ranking;
     private String number;
     private int hitCount;
     private int beHitCount;
@@ -15,6 +16,14 @@ public class GameInfo {
         this.number = number;
         this.hitCount = hitCount;
         this.beHitCount = beHitCount;
+    }
+
+    public int getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(int ranking) {
+        this.ranking = ranking;
     }
 
     public String getNumber() {
