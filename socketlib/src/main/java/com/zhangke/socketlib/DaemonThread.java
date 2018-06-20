@@ -1,32 +1,25 @@
 package com.zhangke.socketlib;
 
 import android.os.Handler;
-import android.os.Message;
 
 import com.zhangke.zlog.ZLog;
 
 import java.net.Socket;
 
 /**
- * 用于发送心跳包
- * Created by ZhangKe on 2018/6/10.
+ * 守护线程，判断Socket是否断开连接，断开则重新连接
+ * Created by ZhangKe on 2018/6/20.
  */
-public class HeartbeatThread extends Thread {
+public class DaemonThread extends Thread {
 
     private static final String TAG = "SocketLib";
 
-    /**
-     * 心跳包间隔
-     */
-    private final int INTERVAL = 5000;
-
     private Socket mSocket;
     private Handler mHandler;
-
     private boolean stop;
 
-    public HeartbeatThread(Handler handler) {
-        this.mHandler = handler;
+    public DaemonThread(Handler mHandler) {
+        this.mHandler = mHandler;
         stop = false;
     }
 
@@ -38,16 +31,13 @@ public class HeartbeatThread extends Thread {
     public void run() {
         super.run();
         while (!stop) {
-            if (mSocket != null && mSocket.isConnected() && !mSocket.isClosed() && mHandler != null) {
-                Message message = mHandler.obtainMessage();
-                message.what = MessageType.SEND_MESSAGE;
-                message.obj = "hello";
-                mHandler.sendMessage(message);
-            }
             try {
-                Thread.sleep(INTERVAL);
+                if(mSocket != null && mSocket.isConnected() && mSocket.isClosed()&& mHandler != null){
+                    mHandler.sendEmptyMessage(MessageType.CONNECT);
+                }
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
-                ZLog.e(TAG, "HeartbeatThread#run()", e);
+                ZLog.e(TAG, "DaemonThread#run()", e);
                 if (stop) {
                     quit();
                 } else {
@@ -64,6 +54,6 @@ public class HeartbeatThread extends Thread {
         mSocket = null;
         mHandler = null;
         Thread.currentThread().interrupt();
-        ZLog.d(TAG, "心跳线程已停止");
+        ZLog.d(TAG, "守护线程已停止");
     }
 }

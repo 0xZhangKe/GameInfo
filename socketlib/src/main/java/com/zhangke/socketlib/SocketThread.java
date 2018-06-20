@@ -41,6 +41,7 @@ public class SocketThread extends Thread {
 
     private InputMonitorThread mInputMonitorThread;
     private HeartbeatThread mHeartbeatThread;
+    private DaemonThread mDaemonThread;
 
     public SocketThread() {
     }
@@ -55,6 +56,8 @@ public class SocketThread extends Thread {
         mInputMonitorThread.start();
         mHeartbeatThread = new HeartbeatThread(mHandler);
         mHeartbeatThread.start();
+        mDaemonThread = new DaemonThread(mHandler);
+        mDaemonThread.start();
         Looper.loop();
     }
 
@@ -89,9 +92,6 @@ public class SocketThread extends Thread {
                     if (msg.obj instanceof String) {
                         if (mSocket.isConnected() && !mSocket.isClosed()) {
                             sendText((String) msg.obj);
-                        } else {
-                            mHandler.sendEmptyMessage(MessageType.CONNECT);
-                            mHandler.sendMessage(msg);
                         }
                     }
                     break;
@@ -114,9 +114,10 @@ public class SocketThread extends Thread {
             ZLog.d(TAG, "开始连接Socket...");
             status = 1;
             try {
-                mSocket = new Socket("192.168.22.114", 6800);
+                mSocket = new Socket("192.168.22.139", 6800);
                 mInputMonitorThread.bindSocket(mSocket);
                 mHeartbeatThread.bindSocket(mSocket);
+                mDaemonThread.bindSocket(mSocket);
                 status = 2;
                 if (socketListener != null) {
                     socketListener.onConnected();
@@ -177,6 +178,10 @@ public class SocketThread extends Thread {
             if (mHeartbeatThread != null) {
                 mHeartbeatThread.quit();
                 mHeartbeatThread = null;
+            }
+            if(mDaemonThread != null){
+                mDaemonThread.quit();
+                mDaemonThread = null;
             }
             ZLog.d(TAG, "Socket线程已结束");
         }

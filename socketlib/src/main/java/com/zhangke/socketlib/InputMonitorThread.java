@@ -67,7 +67,12 @@ public class InputMonitorThread extends Thread {
                         }
                         mInputStreamReader = new InputStreamReader(mInputStream);
                         mBufferedReader = new BufferedReader(mInputStreamReader);
-                        String response = mBufferedReader.readLine();
+                        StringBuilder responseBuilder = new StringBuilder();
+                        int c = 0;
+                        while((c = mBufferedReader.read()) > 32){
+                            responseBuilder.append((char)c);
+                        }
+                        String response = responseBuilder.toString();
                         if (!TextUtils.isEmpty(response)) {
                             ZLog.i(TAG, "run()——>Socket收到消息：" + response);
                             Message message = mHandler.obtainMessage();

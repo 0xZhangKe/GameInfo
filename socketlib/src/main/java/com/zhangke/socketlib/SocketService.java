@@ -59,8 +59,10 @@ public class SocketService extends Service implements SocketListener {
         if (socketHandler != null) {
             socketHandler.sendEmptyMessage(MessageType.CONNECT);
         } else {
-            for (SocketListener listener : listeners) {
-                listener.onConnectError(new Throwable("连接失败->Handler== null"));
+            if (listeners != null && !listeners.isEmpty()) {
+                for (SocketListener listener : listeners) {
+                    listener.onConnectError(new Throwable("连接失败->Handler== null"));
+                }
             }
         }
     }
@@ -85,40 +87,50 @@ public class SocketService extends Service implements SocketListener {
     @Override
     public void onConnected() {
         ZLog.d(TAG, "Socket 已连接");
-        for (SocketListener listener : listeners) {
-            listener.onConnected();
+        if (listeners != null && !listeners.isEmpty()) {
+            for (SocketListener listener : listeners) {
+                listener.onConnected();
+            }
         }
     }
 
     @Override
     public void onConnectError(Throwable cause) {
         ZLog.d(TAG, String.format("Socket 连接失败：%s", cause.toString()));
-        for (SocketListener listener : listeners) {
-            listener.onConnectError(cause);
+        if (listeners != null && !listeners.isEmpty()) {
+            for (SocketListener listener : listeners) {
+                listener.onConnectError(cause);
+            }
         }
     }
 
     @Override
     public void onDisconnected() {
         ZLog.d(TAG, "Socket 断开连接");
-        for (SocketListener listener : listeners) {
-            listener.onDisconnected();
+        if (listeners != null && !listeners.isEmpty()) {
+            for (SocketListener listener : listeners) {
+                listener.onDisconnected();
+            }
         }
     }
 
     @Override
     public void onSendTextError(Throwable cause) {
         ZLog.d(TAG, String.format("Socket 数据发送失败：%s", cause.toString()));
-        for (SocketListener listener : listeners) {
-            listener.onSendTextError(cause);
+        if (listeners != null && !listeners.isEmpty()) {
+            for (SocketListener listener : listeners) {
+                listener.onSendTextError(cause);
+            }
         }
     }
 
     @Override
     public void onTextMessage(String message) {
         ZLog.d(TAG, "Socket 收到消息：" + message);
-        for (SocketListener listener : listeners) {
-            listener.onTextMessage(message);
+        if (listeners != null && !listeners.isEmpty()) {
+            for (SocketListener listener : listeners) {
+                listener.onTextMessage(message);
+            }
         }
     }
 
