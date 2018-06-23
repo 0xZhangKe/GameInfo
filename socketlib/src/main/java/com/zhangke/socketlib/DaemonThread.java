@@ -53,7 +53,7 @@ public class DaemonThread extends Thread {
         stop = true;
         mSocket = null;
         mHandler = null;
-        Thread.currentThread().interrupt();
+        DaemonThread.this.interrupt();
         ZLog.d(TAG, "守护线程已停止");
     }
 }

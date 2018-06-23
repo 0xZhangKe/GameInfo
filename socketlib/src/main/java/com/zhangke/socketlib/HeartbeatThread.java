@@ -63,7 +63,7 @@ public class HeartbeatThread extends Thread {
         stop = true;
         mSocket = null;
         mHandler = null;
-        Thread.currentThread().interrupt();
+        this.interrupt();
         ZLog.d(TAG, "心跳线程已停止");
     }
 }

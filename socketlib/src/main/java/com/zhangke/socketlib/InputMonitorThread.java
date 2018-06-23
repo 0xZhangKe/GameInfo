@@ -129,7 +129,7 @@ public class InputMonitorThread extends Thread {
         destroyIORes();
         mSocket = null;
         mHandler = null;
-        Thread.currentThread().interrupt();
+        this.interrupt();
         ZLog.i(TAG, "Socket数据读取线程已结束");
     }
 }
