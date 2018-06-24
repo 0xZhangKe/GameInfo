@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
 
     private ArrayList<GameInfo> gameInfoList = new ArrayList<>();
 
+    private volatile long lastSignalTime;
+    private PlayVideoThread playVideoThread;
+
     private SocketService mSocketService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -64,9 +67,13 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
 
         videoView = findViewById(R.id.video_view);
 
+        lastSignalTime = System.currentTimeMillis();
+        playVideoThread = new PlayVideoThread();
+        playVideoThread.start();
+
         bindSocketService();
 
-        playVideo();
+        videoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.trailer));
         videoView.setOnCompletionListener(mp -> {
             playVideo();
         });
@@ -109,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
                 String hitCount = infoArray[1];
                 String beHitCount = infoArray[2];
                 if (!TextUtils.isEmpty(number) && !TextUtils.isEmpty(hitCount) && !TextUtils.isEmpty(beHitCount)) {
+                    lastSignalTime = System.currentTimeMillis();
+                    pauseVideo();
                     addInfo(new GameInfo(number, Integer.valueOf(hitCount), Integer.valueOf(beHitCount)));
                 }
             }
@@ -143,18 +152,23 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
     }
 
     private void playVideo() {
-        if (videoView.getVisibility() != View.VISIBLE) {
-            videoView.setVisibility(View.VISIBLE);
-        }
-        videoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.trailer));
-        videoView.start();
-        videoView.requestFocus();
+        lastSignalTime = System.currentTimeMillis();
+        runOnUiThread(() -> {
+            if (videoView.getVisibility() != View.VISIBLE) {
+                videoView.setVisibility(View.VISIBLE);
+            }
+            videoView.start();
+            videoView.requestFocus();
+        });
     }
 
     private void pauseVideo() {
-        videoView.pause();
-        videoView.setVisibility(View.GONE);
-        videoView.resume();
+        runOnUiThread(() -> {
+            if (videoView.isPlaying()) {
+                videoView.stopPlayback();
+                videoView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -173,6 +187,37 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
     @Override
     protected void onDestroy() {
         unBindSocketService();
+        playVideoThread.quit();
+        playVideoThread = null;
         super.onDestroy();
+    }
+
+    private class PlayVideoThread extends Thread {
+
+        private boolean stop = false;
+
+        @Override
+        public void run() {
+            super.run();
+            while (!stop) {
+                if (System.currentTimeMillis() - lastSignalTime > 30000) {
+                    playVideo();
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    if (stop) {
+                        return;
+                    } else {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+        }
+
+        private void quit() {
+            stop = true;
+            this.interrupt();
+        }
     }
 }
