@@ -18,7 +18,7 @@ public class HeartbeatThread extends Thread {
     /**
      * 心跳包间隔
      */
-    private final int INTERVAL = 5000;
+    private final int INTERVAL = 30000;
 
     private Socket mSocket;
     private Handler mHandler;
