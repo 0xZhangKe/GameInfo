@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.zhangke.socketlib.SocketListener;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
 
     private static final String TAG = "MainActivity";
 
+    private TextView tv_title_01, tv_title_02, tv_title_03;
     private LineView lineView01, lineView02,
             lineView03, lineView04,
             lineView05, lineView06;
@@ -57,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
         super.onCreate(savedInstanceState);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+        tv_title_01 = (TextView) findViewById(R.id.tv_title_01);
+        tv_title_02 = (TextView) findViewById(R.id.tv_title_02);
+        tv_title_03 = (TextView) findViewById(R.id.tv_title_03);
 
         lineView01 = findViewById(R.id.linea_01);
         lineView02 = findViewById(R.id.linea_02);
@@ -141,6 +147,30 @@ public class MainActivity extends AppCompatActivity implements SocketListener {
 
     private void showInfo() {
         runOnUiThread(() -> {
+                    if (!gameInfoList.isEmpty()) {
+                        switch (gameInfoList.size()) {
+                            case 1:
+                                tv_title_01.setText(gameInfoList.get(0).getNumber());
+                                tv_title_02.setText("");
+                                tv_title_03.setText("");
+                                break;
+                            case 2:
+                                tv_title_01.setText(gameInfoList.get(0).getNumber());
+                                tv_title_02.setText(gameInfoList.get(1).getNumber());
+                                tv_title_03.setText("");
+                                break;
+                            case 3:
+                            default:
+                                tv_title_01.setText(gameInfoList.get(0).getNumber());
+                                tv_title_02.setText(gameInfoList.get(1).getNumber());
+                                tv_title_03.setText(gameInfoList.get(2).getNumber());
+                                break;
+                        }
+                    } else {
+                        tv_title_01.setText("");
+                        tv_title_02.setText("");
+                        tv_title_03.setText("");
+                    }
                     lineView01.setInfo(gameInfoList.size() > 0 ? gameInfoList.get(0) : null);
                     lineView02.setInfo(gameInfoList.size() > 1 ? gameInfoList.get(1) : null);
                     lineView03.setInfo(gameInfoList.size() > 2 ? gameInfoList.get(2) : null);
