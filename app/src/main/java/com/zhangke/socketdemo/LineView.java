@@ -67,6 +67,7 @@ public class LineView extends LinearLayout {
         tv.setLayoutParams(layoutParams);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.WHITE);
+        tv.setTextSize(UiUtil.sp2px(getContext(), 24));
     }
 
     private View getDividerView() {

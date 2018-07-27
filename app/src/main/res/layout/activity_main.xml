@@ -9,8 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="15dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -26,7 +27,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="#FFF"
-                android:textSize="18sp" />
+                android:textSize="24sp"/>
 
             <TextView
                 android:id="@+id/tv_title_01"
@@ -35,7 +36,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="#FFF"
-                android:textSize="18sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/tv_title_03"
@@ -45,13 +46,13 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="#FFF"
-                android:textSize="18sp" />
+                android:textSize="24sp" />
         </LinearLayout>
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginTop="-15dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="-20dp"
             android:scaleType="fitXY"
             android:src="@mipmap/podium" />
 
