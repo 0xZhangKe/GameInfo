@@ -74,7 +74,7 @@ public class LineView extends LinearLayout {
         tv.setLayoutParams(layoutParams);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.WHITE);
-        tv.setTextSize(UiUtil.sp2px(getContext(), 24));
+        tv.setTextSize(UiUtil.sp2px(getContext(), 28));
         tv.setTextColor(textColor);
         tv.setTypeface(Typeface.DEFAULT_BOLD);
     }

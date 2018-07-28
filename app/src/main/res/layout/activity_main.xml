@@ -29,7 +29,7 @@
                 android:gravity="center"
                 android:textColor="#F00"
                 android:textStyle="bold"
-                android:textSize="24sp"/>
+                android:textSize="28sp"/>
 
             <TextView
                 android:id="@+id/tv_title_01"
@@ -39,7 +39,7 @@
                 android:gravity="center"
                 android:textColor="#F00"
                 android:textStyle="bold"
-                android:textSize="24sp" />
+                android:textSize="28sp" />
 
             <TextView
                 android:id="@+id/tv_title_03"
@@ -50,7 +50,7 @@
                 android:gravity="center"
                 android:textColor="#F00"
                 android:textStyle="bold"
-                android:textSize="24sp" />
+                android:textSize="28sp" />
         </LinearLayout>
 
         <ImageView
@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:textColor="#00AEEF"
+            app:textColor="#0000ff"
             android:background="#F00" />
 
         <View
@@ -110,7 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
-            app:textColor="#00AEEF"
+            app:textColor="#0000ff"
             android:background="#FFC000" />
 
         <View
@@ -123,7 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.7"
-            app:textColor="#00AEEF"
+            app:textColor="#0000ff"
             android:background="#FFFF00" />
 
         <View
@@ -136,7 +136,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.6"
-            app:textColor="#F00"
+            app:textColor="#0000ff"
             android:background="#92D050" />
 
         <View
@@ -149,7 +149,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            app:textColor="#F00"
+            app:textColor="#0000ff"
             android:background="#92D050" />
 
         <View
@@ -162,7 +162,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.4"
-            app:textColor="#F00"
+            app:textColor="#0000ff"
             android:background="#92D050" />
 
         <View
