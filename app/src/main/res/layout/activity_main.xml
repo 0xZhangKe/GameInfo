@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@mipmap/bg"
     android:orientation="vertical">
 
@@ -26,7 +27,8 @@
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textColor="#FFF"
+                android:textColor="#F00"
+                android:textStyle="bold"
                 android:textSize="24sp"/>
 
             <TextView
@@ -35,7 +37,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textColor="#FFF"
+                android:textColor="#F00"
+                android:textStyle="bold"
                 android:textSize="24sp" />
 
             <TextView
@@ -45,7 +48,8 @@
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textColor="#FFF"
+                android:textColor="#F00"
+                android:textStyle="bold"
                 android:textSize="24sp" />
         </LinearLayout>
 
@@ -93,6 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            app:textColor="#00AEEF"
             android:background="#F00" />
 
         <View
@@ -105,6 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
+            app:textColor="#00AEEF"
             android:background="#FFC000" />
 
         <View
@@ -117,6 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.7"
+            app:textColor="#00AEEF"
             android:background="#FFFF00" />
 
         <View
@@ -129,6 +136,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.6"
+            app:textColor="#F00"
             android:background="#92D050" />
 
         <View
@@ -141,6 +149,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
+            app:textColor="#F00"
             android:background="#92D050" />
 
         <View
@@ -153,6 +162,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.4"
+            app:textColor="#F00"
             android:background="#92D050" />
 
         <View

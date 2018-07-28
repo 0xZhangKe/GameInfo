@@ -1,7 +1,10 @@
 package com.zhangke.socketdemo;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -21,18 +24,22 @@ public class LineView extends LinearLayout {
     private TextView tv04;
     private TextView tv05;
 
+    private int textColor;
+
     public LineView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public LineView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public LineView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        final TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LineView,
+                defStyleAttr, 0);
+        textColor = attributes.getColor(R.styleable.LineView_textColor, 0xffffffff);
+        attributes.recycle();
         init();
     }
 
@@ -68,6 +75,8 @@ public class LineView extends LinearLayout {
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.WHITE);
         tv.setTextSize(UiUtil.sp2px(getContext(), 24));
+        tv.setTextColor(textColor);
+        tv.setTypeface(Typeface.DEFAULT_BOLD);
     }
 
     private View getDividerView() {
